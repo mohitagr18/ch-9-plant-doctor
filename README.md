@@ -234,6 +234,5 @@ SERPER_API_KEY=your_serper_api_key
 ---
 
 ## 📝 License
-
-MIT License — see `LICENSE` file for details.
+See `LICENSE` file for details.
 
