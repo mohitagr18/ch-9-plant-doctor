@@ -11,7 +11,7 @@ AI-powered pest & disease detection with personalized treatment & product recomm
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg)](https://www.docker.com)
 [![Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployed-4285F4.svg)](https://cloud.google.com/run)
 
-**Live Demo:** [https://agri-assistant-g57ai3hf4a-uc.a.run.app/](https://agri-assistant-g57ai3hf4a-uc.a.run.app/)
+**Live Demo:** [https://agri-assistant-1033387713180.us-central1.run.app/](https://agri-assistant-1033387713180.us-central1.run.app/)
 
 ---
 
@@ -74,6 +74,7 @@ Detailed Mermaid workflow diagrams are in the [`workflow/`](workflow/) directory
 | [`03_tool_calling_sequence.md`](workflow/03_tool_calling_sequence.md) | Gemini tool-calling sequence diagram |
 | [`04_cloud_deployment.md`](workflow/04_cloud_deployment.md) | CI/CD and Cloud Run deployment pipeline |
 | [`05_graceful_degradation.md`](workflow/05_graceful_degradation.md) | Graceful degradation under incomplete context |
+| [`06_deployment_tutorial.md`](workflow/06_deployment_tutorial.md) | Step-by-step Cloud Run deployment from scratch |
 
 ---
 
@@ -132,7 +133,8 @@ ch-9-plant-doctor/
 │   ├── 02_mcp_architecture.md
 │   ├── 03_tool_calling_sequence.md
 │   ├── 04_cloud_deployment.md
-│   └── 05_graceful_degradation.md
+│   ├── 05_graceful_degradation.md
+│   └── 06_deployment_tutorial.md
 │
 ├── evaluation/                     # Benchmarks and evaluation scripts
 │   ├── benchmark_queries.py
@@ -205,6 +207,8 @@ See [`workflow/04_cloud_deployment.md`](workflow/04_cloud_deployment.md) for the
 
 ### 2. Manual Deployment via gcloud
 
+See [`workflow/06_deployment_tutorial.md`](workflow/06_deployment_tutorial.md) for a comprehensive, step-by-step guide to deploying from scratch, including setting up Artifact Registry, handling IAM roles, and using Google Secret Manager.
+
 ```bash
 gcloud run deploy agri-assistant \
   --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/agri-assistant/agri-assistant:latest \
@@ -224,7 +228,7 @@ GOOGLE_API_KEY=your_google_gemini_api_key
 SERPER_API_KEY=your_serper_api_key
 ```
 
-- **Google Gemini API:** [Google AI Studio](https://makersuite.google.com/app/apikey) (Free: 60 req/min)
+- **Google Gemini API:** [Google AI Studio](https://aistudio.google.com/apikey) (Free: 60 req/min). *Note: Ensure your key is created directly in AI Studio to properly link billing and avoid ResourceExhausted errors with newer models.*
 - **Serper API:** [Serper.dev](https://serper.dev/) (Free: 2,500 searches/month)
 
 ---
