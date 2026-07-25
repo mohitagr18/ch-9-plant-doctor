@@ -81,31 +81,23 @@ Detailed Mermaid workflow diagrams are in the [`workflow/`](workflow/) directory
 
 ### Agentic AI Workflow
 
-```
-User Upload → Gemini Vision (Detection) → Gemini 2.5 Flash Agent (Context Gathering)
-                                              ↓
-                                         Tool Calls:
-                                         - get_weather()
-                                         - get_soil_type()
-                                         - search_amazon_products()
-                                              ↓
-                                    Personalized Recommendations
+```mermaid
+flowchart TD
+    A["User Upload"] --> B["Gemini Vision Detection"]
+    B --> C["Detection Results<br/>pest · severity · plant"]
+    C --> D["Gemini 2.5 Flash Agent"]
+    D --> E["Get Weather"]
+    D --> F["Get Soil Type"]
+    E --> G["Weather Context"]
+    F --> H["Soil Context"]
+    G --> I["Treatment Recommendation Synthesis"]
+    H --> I
+    I --> J["Search Products"]
+    J --> K["Product Recommendations"]
+    I --> L["Personalized Treatment Plan"]
+    K --> L
 ```
 
-### MCP Architecture (Optional)
-
-```
-External AI Clients (Claude Desktop, etc.)
-              ↓
-         MCP Protocol
-              ↓
-     MCP Server (agri_tools.py)
-              ↓
-     Tool Implementations
-     - Weather API
-     - Soil Database
-     - Product Search
-```
 
 ### Technology Stack
 
