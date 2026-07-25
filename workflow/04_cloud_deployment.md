@@ -2,11 +2,11 @@
 
 > **Chapter 9.4** — Deploying multimodal agents to Google Cloud Run
 
-This diagram shows the full deployment pipeline from a code push on `main` to a live Cloud Run service, as implemented in `.github/workflows/deploy.yml`.
+This diagram shows the full deployment pipeline from a manual trigger in GitHub Actions to a live Cloud Run service, as implemented in `.github/workflows/deploy.yml`.
 
 ```mermaid
 flowchart TD
-    A(["👨‍💻 Developer\ngit push main"]) --> B["GitHub Actions Trigger\non: push to main"]
+    A(["👨‍💻 Developer\nTrigger workflow_dispatch"]) --> B["GitHub Actions Trigger\non: workflow_dispatch"]
 
     subgraph GHA["🔄 GitHub Actions — CI/CD Pipeline"]
         B --> C["actions/checkout@v4\nCheckout code"]

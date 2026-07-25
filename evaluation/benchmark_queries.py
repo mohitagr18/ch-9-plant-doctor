@@ -27,7 +27,7 @@ from qa_engine_agentic import get_weather, get_soil_type, search_amazon_products
 # CONFIG
 # ════════════════════════════════════════════════════════════════════════════
 
-MODEL      = "gemini-2.5-flash"
+MODEL      = "gemini-3.5-flash"
 ZIPCODE    = "94533"
 INFESTATION = "medium"
 

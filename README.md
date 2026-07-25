@@ -7,7 +7,7 @@
 AI-powered pest & disease detection with personalized treatment & product recommendations.
 
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.28.0-FF4B4B.svg)](https://streamlit.io)
-[![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-blue.svg)](https://gemini.google/us/about/?hl=en)
+[![Gemini](https://img.shields.io/badge/Gemini-3.5_Flash-blue.svg)](https://gemini.google/us/about/?hl=en)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg)](https://www.docker.com)
 [![Cloud Run](https://img.shields.io/badge/Cloud%20Run-Deployed-4285F4.svg)](https://cloud.google.com/run)
 
@@ -35,7 +35,7 @@ AI-powered pest & disease detection with personalized treatment & product recomm
 
 Plant Doctor is an intelligent web application that helps gardeners identify plant pests and diseases through image recognition, then provides personalized treatment recommendations based on local weather conditions, soil types, and severity levels.
 
-The application uses **agentic AI architecture** powered by Google Gemini 2.5 Flash, where the AI autonomously decides when to call tools for weather data, soil information, and product recommendations to generate comprehensive treatment plans. The system also implements **Model Context Protocol (MCP)** standards, allowing the agricultural tools to be exposed to external AI clients like Claude Desktop for broader ecosystem integration.
+The application uses **agentic AI architecture** powered by Google Gemini 3.5 Flash, where the AI autonomously decides when to call tools for weather data, soil information, and product recommendations to generate comprehensive treatment plans. The system also implements **Model Context Protocol (MCP)** standards, allowing the agricultural tools to be exposed to external AI clients like Claude Desktop for broader ecosystem integration.
 
 ---
 
@@ -56,7 +56,7 @@ This project covers the following sections from Chapter 9:
 ## ✨ Features
 
 - **🔍 AI-Powered Detection** — Gemini Vision for instant pest/disease identification with severity scoring
-- **🌐 Agentic AI Architecture** — Gemini 2.5 Flash autonomously calls tools based on context
+- **🌐 Agentic AI Architecture** — Gemini 3.5 Flash autonomously calls tools based on context
 - **🔌 MCP Integration** — Tools exposed via Model Context Protocol for Claude Desktop and other clients
 - **💊 Personalized Treatment Plans** — Weather- and soil-optimized recommendations with Amazon product links
 - **📊 Interactive Menu System** — Soil Impact, Weather Timing, Monitoring, Full Report, Custom Q&A
@@ -85,7 +85,7 @@ Detailed Mermaid workflow diagrams are in the [`workflow/`](workflow/) directory
 flowchart TD
     A["User Upload"] --> B["Gemini Vision Detection"]
     B --> C["Detection Results<br/>pest · severity · plant"]
-    C --> D["Gemini 2.5 Flash Agent"]
+    C --> D["Gemini 3.5 Flash Agent"]
     D --> E["Get Weather"]
     D --> F["Get Soil Type"]
     E --> G["Weather Context"]
@@ -103,7 +103,7 @@ flowchart TD
 
 **Frontend:** Streamlit, Custom CSS for mobile responsiveness
 
-**Backend:** Google Gemini 2.5 Flash, Python 3.11, PIL, FastMCP
+**Backend:** Google Gemini 3.5 Flash, Python 3.11, PIL, FastMCP
 
 **Data Sources:** NOAA Weather Service API, USDA Web Soil Survey, Serper Google Search API
 
@@ -187,7 +187,23 @@ docker run -p 8080:8080 --env-file .env agri-assistant:local
 
 ## ☁️ Deployment
 
+### 1. GitHub Actions (CI/CD)
+
+The project includes an automated deployment pipeline to Google Cloud Run in `.github/workflows/deploy.yml`. 
+
+**Important:** To prevent deployment failures when you first clone or fork this repository, the workflow is configured to run **manually**.
+
+To deploy using GitHub Actions:
+1. Go to your repository **Settings** -> **Secrets and variables** -> **Actions**.
+2. Add the following repository secrets:
+   - `GCP_PROJECT_ID` (Your Google Cloud Project ID)
+   - `GCP_REGION` (e.g., `us-central1`)
+   - `GCP_SA_KEY` (The JSON key for your Google Cloud Service Account)
+3. Go to the **Actions** tab in your repository, select "Deploy to Cloud Run", and click **Run workflow**.
+
 See [`workflow/04_cloud_deployment.md`](workflow/04_cloud_deployment.md) for the full CI/CD pipeline diagram.
+
+### 2. Manual Deployment via gcloud
 
 ```bash
 gcloud run deploy agri-assistant \

@@ -12,7 +12,7 @@ class PlantPestDetector:
         self.api_key = os.getenv("GOOGLE_API_KEY")
         if self.api_key:
             genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model = genai.GenerativeModel('gemini-3.5-flash')
     
     def identify(self, image_bytes):
         """
