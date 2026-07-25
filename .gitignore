@@ -38,6 +38,8 @@ ENV/
 # IDE
 .vscode/
 .idea/
+.agents/
+.claude/
 *.swp
 *.swo
 
