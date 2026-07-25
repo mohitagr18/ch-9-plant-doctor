@@ -1,4 +1,4 @@
-# 🌱 Agricultural Assistant
+# 🌱 Plant Doctor
 
 > **Book Chapter 9 — *Case study: context-aware actuation with the Plant Doctor architecture***
 > 
@@ -33,7 +33,7 @@ AI-powered pest & disease detection with personalized treatment & product recomm
 
 ## 🎯 Overview
 
-Agricultural Assistant is an intelligent web application that helps gardeners identify plant pests and diseases through image recognition, then provides personalized treatment recommendations based on local weather conditions, soil types, and severity levels.
+Plant Doctor is an intelligent web application that helps gardeners identify plant pests and diseases through image recognition, then provides personalized treatment recommendations based on local weather conditions, soil types, and severity levels.
 
 The application uses **agentic AI architecture** powered by Google Gemini 2.5 Flash, where the AI autonomously decides when to call tools for weather data, soil information, and product recommendations to generate comprehensive treatment plans. The system also implements **Model Context Protocol (MCP)** standards, allowing the agricultural tools to be exposed to external AI clients like Claude Desktop for broader ecosystem integration.
 
@@ -225,6 +225,3 @@ SERPER_API_KEY=your_serper_api_key
 
 MIT License — see `LICENSE` file for details.
 
----
-
-**Built with ❤️ using Google Gemini 2.5 Flash · Chapter 9 of *The Write Path***
