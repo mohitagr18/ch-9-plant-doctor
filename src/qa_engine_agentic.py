@@ -10,8 +10,6 @@ GEMINI_MODEL = 'gemini-2.5-flash'
 
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-else:
-    raise ValueError("GOOGLE_API_KEY environment variable not set")
 
 
 def get_weather(zipcode: str) -> dict:

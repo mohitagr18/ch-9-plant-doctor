@@ -49,6 +49,6 @@ Cloud Run runs the container as **stateless serverless**. Key design choices to 
 |-----------|-------------------------|
 | Session state lost between requests | Streamlit `session_state` held in-process per user session |
 | Secrets not in env | Google Secret Manager injected at deploy time |
-| Image size & cold start | `python:3.11-slim` base + layer caching via requirements.txt copy |
+| Image size & cold start | `python:3.11-slim` base + layer caching via `pyproject.toml` and `uv.lock` copy |
 | Multi-platform compatibility | `--platform linux/amd64` explicit build flag for Apple Silicon devs |
 | Scale to zero | `--min-instances 0` keeps costs at $0 when idle |

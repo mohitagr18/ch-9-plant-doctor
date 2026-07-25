@@ -134,10 +134,16 @@ ch-9-plant-doctor/
 │   ├── 04_cloud_deployment.md
 │   └── 05_graceful_degradation.md
 │
+├── evaluation/                     # Benchmarks and evaluation scripts
+│   ├── benchmark_queries.py
+│   ├── test_agentic_flow.py
+│   └── results/
+│
 ├── samples/                        # Sample images for testing
 ├── .github/workflows/deploy.yml   # GitHub Actions CI/CD
 ├── Dockerfile
-├── requirements.txt
+├── pyproject.toml
+├── uv.lock
 ├── .env.example
 └── README.md
 ```
@@ -152,26 +158,20 @@ git clone https://github.com/mohitagr18/ch-9-plant-doctor.git
 cd ch-9-plant-doctor
 ```
 
-2. **Create virtual environment**
+2. **Sync environment & install dependencies**
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+uv sync
 ```
 
-3. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Set up environment variables**
+3. **Set up environment variables**
 ```bash
 cp .env.example .env
 # Edit .env with your API keys
 ```
 
-5. **Run locally**
+4. **Run locally**
 ```bash
-streamlit run app.py
+uv run streamlit run app.py
 ```
 
 ---

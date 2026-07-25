@@ -143,6 +143,20 @@ def reset_session():
 # ============================================================================
 
 def main():
+    # API Key Configuration Sidebar
+    with st.sidebar:
+        st.header("🔑 API Configuration")
+        google_api_key = st.text_input("Google Gemini API Key", type="password", value=os.environ.get("GOOGLE_API_KEY", ""))
+        serper_api_key = st.text_input("Serper API Key", type="password", value=os.environ.get("SERPER_API_KEY", ""))
+        
+        if google_api_key:
+            os.environ["GOOGLE_API_KEY"] = google_api_key
+        if serper_api_key:
+            os.environ["SERPER_API_KEY"] = serper_api_key
+            
+        if not google_api_key or not serper_api_key:
+            st.warning("Please enter both API keys to use all features.")
+
     # Header
     st.title("🌱 Plant Doctor")
     st.markdown("""
@@ -203,31 +217,38 @@ def main():
             st.image(image_to_process, caption="Uploaded Image", use_container_width=True)
             
             if st.button("🔍 Analyze Image", type="primary"):
-                with st.spinner("Analyzing image..."):
-                    buffer = BytesIO()
-                    image_to_process.save(buffer, format='JPEG')
-                    image_bytes = buffer.getvalue()
-                    
-                    detector = load_detector()
-                    pest, severity, plant, confidence, subject_type = detector.identify(image_bytes)
-                    
-                    brief_assessment = generate_brief_assessment(pest, severity, plant)
-                    
-                    st.session_state.detection_results = {
-                        'pest': pest,
-                        'severity': severity,
-                        'plant': plant,
-                        'confidence': confidence,
-                        'subject_type': subject_type,
-                        'brief_assessment': brief_assessment,
-                        'image': image_to_process
-                    }
-                    
-                    if 'sample_image' in st.session_state:
-                        del st.session_state.sample_image
-                    
-                    st.session_state.stage = 'details'
-                    st.rerun()
+                if not os.environ.get("GOOGLE_API_KEY"):
+                    st.error("⚠️ Please enter your Google Gemini API Key in the sidebar first.")
+                else:
+                    with st.spinner("Analyzing image..."):
+                        # Reconfigure genai just in case it was updated
+                        import google.generativeai as genai
+                        genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+                        
+                        buffer = BytesIO()
+                        image_to_process.save(buffer, format='JPEG')
+                        image_bytes = buffer.getvalue()
+                        
+                        detector = load_detector()
+                        pest, severity, plant, confidence, subject_type = detector.identify(image_bytes)
+                        
+                        brief_assessment = generate_brief_assessment(pest, severity, plant)
+                        
+                        st.session_state.detection_results = {
+                            'pest': pest,
+                            'severity': severity,
+                            'plant': plant,
+                            'confidence': confidence,
+                            'subject_type': subject_type,
+                            'brief_assessment': brief_assessment,
+                            'image': image_to_process
+                        }
+                        
+                        if 'sample_image' in st.session_state:
+                            del st.session_state.sample_image
+                        
+                        st.session_state.stage = 'details'
+                        st.rerun()
     
     # ========================================================================
     # STAGE 2: SHOW RESULTS & GET DETAILS
@@ -281,12 +302,18 @@ def main():
             submitted = st.form_submit_button("Generate Treatment Plan", type="primary")
             
             if submitted:
-                if not zipcode or len(zipcode) != 5:
+                if not os.environ.get("SERPER_API_KEY"):
+                    st.error("⚠️ Please enter your Serper API Key in the sidebar to generate product recommendations.")
+                elif not zipcode or len(zipcode) != 5:
                     st.error("Please enter a valid 5-digit zip code")
                 elif not plant_input:
                     st.error("Please enter the plant type")
                 else:
                     with st.spinner("Generating personalized treatment plan..."):
+                        # Reconfigure genai just in case
+                        import google.generativeai as genai
+                        genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+                        
                         context = create_agentic_session(
                             pest_or_disease=results['pest'],
                             severity=results['severity'],
