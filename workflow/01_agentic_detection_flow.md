@@ -5,43 +5,52 @@
 This diagram illustrates the end-to-end 3-stage agentic pipeline: from image upload through Gemini Vision detection to tool-calling for personalized treatment recommendations.
 
 ```mermaid
-flowchart TD
-    A(["👤 User"]) --> B["📸 Upload Plant Image"]
-    B --> C{"Image Available?"}
-    C -- Yes --> D["🔍 Plant & Pest Detection"]
-    C -- "Use Sample" --> E["🌿 Load Sample Image"]
-    E --> D
+flowchart LR
+    subgraph DET["1. Detection & Assessment"]
+        direction TB
+        A["📸 Upload Image<br/>or Select Sample"]
+        B{"Image Available?"}
+        C["🌿 Load Sample Image"]
+        D["🔍 Detect Plant, Pest<br/>& Severity"]
+        E["📋 Detection Results<br/>Pest · Severity · Plant Type"]
+        F["⚡ Brief Assessment"]
+        G["⚠️ Risk Summary"]
+        H["📝 Enter ZIP Code"]
 
-    D --> F["📋 Detection Results\n• Pest/Disease\n• Severity\n• Plant Type\n• Subject Type"]
-    F --> G["⚡ Brief Assessment"]
-    G --> H["⚠️ Risk Summary"]
+        A --> B
+        B -- Yes --> D
+        B -- Use Sample --> C --> D
+        D --> E --> F --> G --> H
+    end
 
-    H --> I["📝 User Enters ZIP Code"]
-    F --> J["🤖 Agentic Session"]
-    I --> J
+    subgraph TRT["2. Location-Aware Treatment"]
+        direction TB
+        I["🌦️ Retrieve Weather Data<br/>Temperature · Wind · Forecast"]
+        J["🪨 Retrieve Soil Data<br/>Texture · pH · Drainage"]
+        K["🤖 Combine Detection,<br/>ZIP, Weather & Soil"]
+        L["💊 Generate Treatment Plan"]
+        M["🛒 Find Suitable Products"]
+        N["📦 Treatment Plan<br/>+ Product Options"]
+        O["📊 Interactive Menu<br/>Soil · Weather · Monitor · Q&A"]
 
-    J --> K["🔧 Weather Data\n• Temperature, Wind\n• 3-Day Forecast"]
-    J --> L["🔧 Soil Data\n• Texture, pH\n• Drainage Class"]
+        I --> K
+        J --> K
+        K --> L --> M --> N --> O
+    end
 
-    K --> O["📝 Generate Treatment Plan"]
-    L --> O
+    DET -->|"Detection results + ZIP code"| TRT
 
-    O --> P["🔧 Product Search"]
-    P --> Q["🛒 Product Recommendations\nOrganic/Natural Treatments"]
+    classDef input fill:#4CAF50,color:#fff,stroke:#388E3C
+    classDef detect fill:#2196F3,color:#fff,stroke:#1976D2
+    classDef context fill:#FF9800,color:#fff,stroke:#F57C00
+    classDef agent fill:#9C27B0,color:#fff,stroke:#7B1FA2
+    classDef output fill:#607D8B,color:#fff,stroke:#455A64
 
-    O --> R["💊 Treatment Plan\n+ Product Recommendations"]
-    Q --> R
-
-    R --> S(["📊 Interactive Menu\nSoil · Weather · Monitor · Report · Q&A"])
-
-    style A fill:#4CAF50,color:#fff
-    style D fill:#2196F3,color:#fff
-    style J fill:#9C27B0,color:#fff
-    style K fill:#FF9800,color:#fff
-    style L fill:#FF9800,color:#fff
-    style P fill:#FF9800,color:#fff
-    style R fill:#4CAF50,color:#fff
-    style S fill:#607D8B,color:#fff
+    class A,C,H input
+    class B,D,E,F,G detect
+    class I,J context
+    class K,L,M agent
+    class N,O output
 ```
 
 ## Key Design Principles (Section 9.1)
