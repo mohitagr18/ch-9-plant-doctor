@@ -6,44 +6,50 @@ This diagram shows how the Plant Doctor handles failures at each external depend
 
 ```mermaid
 flowchart TD
-    A["Agentic Session Started\nzipcode provided"] --> B["get_weather(zipcode)"]
-    A --> C["get_soil_type(zipcode)"]
+    A["Agentic Session<br/>ZIP Code Provided"]
 
-    B --> B1{"NOAA API\nReachable?"}
-    B1 -- Yes --> B2["✅ Weather Data\nTemperature, Forecast, Wind"]
-    B1 -- No / Timeout --> B3["⚠️ Error Dict\n{error: 'Failed to fetch...'}"]
-    B3 --> B4["format_weather_display()\nReturns: '⚠️ Weather data unavailable'"]
-    B2 --> B5["Weather context\nadded to prompt"]
-    B4 --> B5
+    B["Retrieve Weather"]
+    C["Retrieve Soil"]
+    D{"Weather<br/>Available?"}
+    E{"Soil<br/>Available?"}
+    F["Weather Context<br/>Temperature · Forecast · Wind"]
+    G["Soil Context<br/>Texture · pH · Drainage"]
+    H["Weather Unavailable<br/>Use Generic Guidance"]
+    I["Soil Unavailable<br/>Use Generic Guidance"]
 
-    C --> C1{"USDA SDA API\nReachable?"}
-    C1 -- Yes --> C2["✅ Soil Data\nTexture, pH, Drainage"]
-    C1 -- No / Timeout --> C3["⚠️ Error Dict\n{error: 'Failed to fetch...'}"]
-    C3 --> C4["format_soil_display()\nReturns: '⚠️ Soil data unavailable'"]
-    C2 --> C5["Soil context\nadded to prompt"]
-    C4 --> C5
+    J["Generate Treatment Plan<br/>Using Available Context"]
 
-    B5 --> D["Gemini generates\ntreatment text\n(with available context)"]
-    C5 --> D
+    K["Search Product Options"]
+    L{"Product Search<br/>Available?"}
+    M["Add Amazon Product Links"]
+    N["Generate Amazon Search Link<br/>Fallback"]
 
-    D --> E["search_amazon_products()"]
-    E --> E1{"Serper API\nReachable?"}
-    E1 -- Yes --> E2["✅ Real Amazon product links"]
-    E1 -- No / Rate limit --> E3["⚠️ Fallback:\nAmazon search URL generated\nfrom query string"]
-    E2 --> F["Product links included"]
-    E3 --> F
+    O(["Treatment Plan Delivered<br/>Notes Any Data Limitations"])
 
-    F --> G(["📋 Treatment Plan Delivered\n(may note data limitations)"])
+    A --> B
+    A --> C
 
-    B3 -.->|"Gemini still\ngenerates generic advice"| D
-    C3 -.->|"Gemini still\ngenerates generic advice"| D
+    B --> D
+    D -- Yes --> F --> J
+    D -- No / Timeout --> H --> J
 
-    style B3 fill:#FF9800,color:#fff
-    style C3 fill:#FF9800,color:#fff
-    style E3 fill:#FF9800,color:#fff
-    style B4 fill:#FFF3E0
-    style C4 fill:#FFF3E0
-    style G fill:#4CAF50,color:#fff
+    C --> E
+    E -- Yes --> G --> J
+    E -- No / Timeout --> I --> J
+
+    J --> K --> L
+    L -- Yes --> M --> O
+    L -- "No / Rate Limit" --> N --> O
+
+    classDef source fill:#2196F3,color:#fff,stroke:#1976D2
+    classDef context fill:#FFF3E0,color:#4E342E,stroke:#FF9800
+    classDef fallback fill:#FF9800,color:#fff,stroke:#E65100
+    classDef output fill:#4CAF50,color:#fff,stroke:#388E3C
+
+    class A,B,C,K source
+    class F,G,J,M context
+    class H,I,N fallback
+    class O output
 ```
 
 ## Degradation Strategy
