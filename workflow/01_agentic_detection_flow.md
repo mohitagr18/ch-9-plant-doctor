@@ -8,27 +8,26 @@ This diagram illustrates the end-to-end 3-stage agentic pipeline: from image upl
 flowchart TD
     A(["👤 User"]) --> B["📸 Upload Plant Image"]
     B --> C{"Image Available?"}
-    C -- Yes --> D["🔍 Gemini Vision\nPlantPestDetector.identify()"]
+    C -- Yes --> D["🔍 Plant & Pest Detection"]
     C -- "Use Sample" --> E["🌿 Load Sample Image"]
     E --> D
 
     D --> F["📋 Detection Results\n• Pest/Disease\n• Severity\n• Plant Type\n• Subject Type"]
-    F --> G["⚡ generate_brief_assessment()\nGemini 2.5 Flash (no tools)"]
-    G --> H["⚠️ Risk Summary\nDisplayed to User"]
+    F --> G["⚡ Brief Assessment"]
+    G --> H["⚠️ Risk Summary"]
 
-    H --> I["📝 User Enters Details\n• ZIP Code\n• Plant Type\n• Infestation Level"]
-    I --> J["🤖 create_agentic_session()\nGemini 2.5 Flash + Tools"]
+    H --> I["📝 User Enters ZIP Code"]
+    F --> J["🤖 Agentic Session"]
+    I --> J
 
-    J --> K["🔧 TOOL CALL: get_weather(zipcode)\nNOAA Weather Service API"]
-    J --> L["🔧 TOOL CALL: get_soil_type(zipcode)\nUSDA Soil Data Access"]
-    K --> M["🌤️ Weather Data\n• Temperature, Wind\n• 3-Day Forecast"]
-    L --> N["🪨 Soil Data\n• Texture, pH\n• Drainage Class"]
+    J --> K["🔧 Weather Data\n• Temperature, Wind\n• 3-Day Forecast"]
+    J --> L["🔧 Soil Data\n• Texture, pH\n• Drainage Class"]
 
-    M --> O["📝 generate_treatment_recommendations()\nGemini synthesizes context"]
-    N --> O
+    K --> O["📝 Generate Treatment Plan"]
+    L --> O
 
-    O --> P["🔧 TOOL CALL: search_amazon_products()\nSerper Google Search API"]
-    P --> Q["🛒 Product Links\nOrganic/Natural treatments"]
+    O --> P["🔧 Product Search"]
+    P --> Q["🛒 Product Recommendations\nOrganic/Natural Treatments"]
 
     O --> R["💊 Treatment Plan\n+ Product Recommendations"]
     Q --> R
