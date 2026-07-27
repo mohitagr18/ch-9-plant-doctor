@@ -5,40 +5,50 @@
 This diagram shows the full deployment pipeline from a manual trigger in GitHub Actions to a live Cloud Run service, as implemented in `.github/workflows/deploy.yml`.
 
 ```mermaid
-flowchart TD
-    A(["👨‍💻 Developer\nTrigger workflow_dispatch"]) --> B["GitHub Actions Trigger\non: workflow_dispatch"]
+flowchart LR
+    A(["👨💻 Developer<br/>Run Deployment"])
 
-    subgraph GHA["🔄 GitHub Actions — CI/CD Pipeline"]
-        B --> C["actions/checkout@v4\nCheckout code"]
-        C --> D["google-github-actions/auth@v2\nAuthenticate with GCP SA Key"]
-        D --> E["setup-gcloud@v2\nConfigure Cloud SDK"]
-        E --> F["Configure Docker\nfor Artifact Registry"]
-        F --> G["docker build\nMulti-platform AMD64 image"]
-        G --> H["docker push\nTag: :sha + :latest"]
+    subgraph GHA["1. GitHub Actions — CI/CD"]
+        direction TB
+        B["Workflow Dispatch"]
+        C["Checkout Code"]
+        D["Authenticate with GCP<br/>Using GitHub Secrets"]
+        E["Configure Cloud SDK<br/>and Artifact Registry"]
+        F["Build Container Image<br/>AMD64"]
+        G["Push Image<br/>SHA Tag + Latest"]
+
+        S["Required GitHub Secrets<br/>Project ID · Region · Service Account Key"]
+
+        B --> C --> D --> E --> F --> G
+        S -.-> D
     end
 
-    subgraph GCP["☁️ Google Cloud Platform"]
-        H --> I["Google Artifact Registry\nContainer image stored"]
-        I --> J["gcloud run deploy\nagri-assistant service"]
-        J --> K["Secret Manager\nGOOGLE_API_KEY + SERPER_API_KEY\ninjected at runtime"]
-        K --> L["Cloud Run Service\n• Memory: 2Gi\n• CPU: 2\n• Timeout: 300s\n• Max instances: 10\n• Min instances: 0"]
+    subgraph GCP["2. Google Cloud Platform"]
+        direction TB
+        H["Artifact Registry<br/>Store Container Image"]
+        I["Deploy Service<br/>to Cloud Run"]
+        J["Inject Runtime Secrets<br/>Google API Key · Serper API Key"]
+        K["Cloud Run Service<br/>2 GiB · 2 CPU · 300 s Timeout<br/>0–10 Instances"]
+
+        H --> I --> J --> K
     end
 
-    L --> M(["🌐 Public URL\nhttps://agri-assistant-*.run.app"])
+    M(["🌐 Public Application URL<br/>agri-assistant-*.run.app"])
 
-    subgraph Secrets["🔐 GitHub Secrets Required"]
-        S1["GCP_PROJECT_ID"]
-        S2["GCP_REGION"]
-        S3["GCP_SA_KEY (JSON)"]
-    end
+    A --> GHA
+    GHA --> GCP
+    GCP --> M
 
-    Secrets -.-> D
+    classDef trigger fill:#4CAF50,color:#fff,stroke:#388E3C
+    classDef secret fill:#FFF3E0,color:#4E342E,stroke:#FF9800
+    classDef output fill:#4CAF50,color:#fff,stroke:#388E3C
 
-    style A fill:#4CAF50,color:#fff
-    style GHA fill:#E3F2FD
-    style GCP fill:#E8F5E9
-    style Secrets fill:#FFF3E0
-    style M fill:#4CAF50,color:#fff
+    class A trigger
+    class S secret
+    class M output
+
+    style GHA fill:#E3F2FD,stroke:#2196F3
+    style GCP fill:#E8F5E9,stroke:#4CAF50
 ```
 
 ## Stateless Deployment Considerations (Section 9.4)
